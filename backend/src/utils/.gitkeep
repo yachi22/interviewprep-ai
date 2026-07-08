@@ -1,0 +1,6 @@
+# Utils
+#
+# Small, shared helper functions that don't belong to a specific
+# feature (e.g. formatDate.js, asyncHandler.js, apiResponse.js).
+#
+# Empty for now — this is a placeholder.

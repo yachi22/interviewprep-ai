@@ -1,0 +1,12 @@
+/* Tailwind's base/components/utilities layers.
+   This is the only global stylesheet in the app — component-level
+   styling is done with Tailwind utility classes directly in JSX. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+}
