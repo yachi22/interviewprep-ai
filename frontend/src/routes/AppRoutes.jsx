@@ -1,3 +1,4 @@
+import ProtectedRoute from "../components/ProtectedRoute.jsx";
 import { Routes, Route } from "react-router-dom";
 import Layout from "../components/Layout.jsx";
 
@@ -49,45 +50,58 @@ export default function AppRoutes() {
 
       {/* App pages (will be protected once auth is implemented) */}
       <Route
-        path="/dashboard"
-        element={
-          <Layout>
-            <Dashboard />
-          </Layout>
-        }
-      />
+  path="/dashboard"
+  element={
+    <ProtectedRoute>
+      <Layout>
+        <Dashboard />
+      </Layout>
+    </ProtectedRoute>
+  }
+/>
+
       <Route
-        path="/company-questions"
-        element={
-          <Layout>
-            <CompanyQuestions />
-          </Layout>
-        }
-      />
+  path="/company-questions"
+  element={
+    <ProtectedRoute>
+      <Layout>
+        <CompanyQuestions />
+      </Layout>
+    </ProtectedRoute>
+  }
+/>
+
       <Route
-        path="/dsa-tracker"
-        element={
-          <Layout>
-            <DSATracker />
-          </Layout>
-        }
-      />
+  path="/dsa-tracker"
+  element={
+    <ProtectedRoute>
+      <Layout>
+        <DSATracker />
+      </Layout>
+    </ProtectedRoute>
+  }
+/>
+
       <Route
-        path="/notes"
-        element={
-          <Layout>
-            <Notes />
-          </Layout>
-        }
-      />
+  path="/notes"
+  element={
+    <ProtectedRoute>
+      <Layout>
+        <Notes />
+      </Layout>
+    </ProtectedRoute>
+  }
+/>
       <Route
-        path="/profile"
-        element={
-          <Layout>
-            <Profile />
-          </Layout>
-        }
-      />
+  path="/profile"
+  element={
+    <ProtectedRoute>
+      <Layout>
+        <Profile />
+      </Layout>
+    </ProtectedRoute>
+  }
+/>
     </Routes>
   );
 }

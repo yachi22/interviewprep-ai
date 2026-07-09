@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../api/authApi";
+import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
   const navigate = useNavigate();
-
+  const { loadUser } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -26,7 +27,7 @@ export default function Login() {
       setLoading(true);
 
       await loginUser(formData);
-
+      await loadUser();
       alert("Login Successful!");
 
       navigate("/dashboard");
