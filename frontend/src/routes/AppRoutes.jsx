@@ -10,7 +10,7 @@ import CompanyQuestions from "../pages/CompanyQuestions.jsx";
 import DSATracker from "../pages/DSATracker.jsx";
 import Notes from "../pages/Notes.jsx";
 import Profile from "../pages/Profile.jsx";
-
+import Questions from "../pages/Questions";
 // AppRoutes
 // ---------
 // Single source of truth for all page routes. Kept separate from App.jsx
@@ -70,7 +70,16 @@ export default function AppRoutes() {
     </ProtectedRoute>
   }
 />
-
+<Route
+  path="/company/:id"
+  element={
+    <ProtectedRoute>
+      <Layout>
+        <Questions />
+      </Layout>
+    </ProtectedRoute>
+  }
+/>
       <Route
   path="/dsa-tracker"
   element={

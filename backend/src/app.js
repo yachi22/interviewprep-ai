@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-
+import companyRoutes from "./routes/company.routes.js";
 import healthRoutes from "./routes/health.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 
@@ -19,6 +19,7 @@ app.use(cookieParser());
 
 app.use("/api/health", healthRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/companies", companyRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ error: "Not found" });
