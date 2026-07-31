@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getCompanyQuestions } from "../api/companyApi";
+import { addBookmark } from "../api/bookmarkApi";
 
 export default function Questions() {
   const { id } = useParams();
@@ -19,6 +20,16 @@ export default function Questions() {
 
     loadQuestions();
   }, [id]);
+
+async function handleBookmark(questionId) {
+  try {
+    await addBookmark(questionId);
+    alert("Question bookmarked successfully!");
+  } catch (error) {
+    console.error(error);
+    alert(error.response?.data?.error || "Failed to bookmark.");
+  }
+}
 
   return (
     <div className="p-8">
@@ -50,6 +61,12 @@ export default function Questions() {
               <p className="mt-3 text-green-700">
                 <strong>Answer:</strong> {question.answer}
               </p>
+              <button
+  onClick={() => handleBookmark(question.id)}
+  className="mt-4 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
+>
+  ⭐ Bookmark
+</button>
             </div>
           ))}
         </div>
