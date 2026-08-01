@@ -6,6 +6,9 @@ import healthRoutes from "./routes/health.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import bookmarkRoutes from "./routes/bookmark.routes.js";
 import solvedRoutes from "./routes/solved.routes.js";
+import dashboardRoutes from "./routes/dashboard.routes.js";
+import dsaRoutes from "./routes/dsa.routes.js";
+import noteRoutes from "./routes/note.routes.js";
 
 const app = express();
 
@@ -24,6 +27,9 @@ app.use("/api/auth", authRoutes);
 app.use("/api/companies", companyRoutes);
 app.use("/api/bookmarks", bookmarkRoutes);
 app.use("/api/solved", solvedRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/dsa", dsaRoutes);
+app.use("/api/notes", noteRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ error: "Not found" });
