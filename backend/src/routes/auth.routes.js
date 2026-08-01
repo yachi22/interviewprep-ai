@@ -7,7 +7,7 @@ import {
   profile,
 } from "../controllers/auth.controller.js";
 
-import { requireAuth } from "../middleware/authMiddleware.js";
+import { requireAuth } from "../middleware/auth.middleware.js";
 
 import { validateRegister } from "../middleware/validateRegister.middleware.js";
 import { validateLogin } from "../middleware/validateLogin.middleware.js";
