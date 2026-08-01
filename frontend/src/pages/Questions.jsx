@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getCompanyQuestions } from "../api/companyApi";
 import { addBookmark } from "../api/bookmarkApi";
+import { addSolvedQuestion } from "../api/solvedApi";
 
 export default function Questions() {
   const { id } = useParams();
@@ -28,6 +29,16 @@ async function handleBookmark(questionId) {
   } catch (error) {
     console.error(error);
     alert(error.response?.data?.error || "Failed to bookmark.");
+  }
+}
+
+async function handleSolved(questionId) {
+  try {
+    await addSolvedQuestion(questionId);
+    alert("Question marked as solved!");
+  } catch (error) {
+    console.error(error);
+    alert(error.response?.data?.error || "Failed to mark as solved.");
   }
 }
 
@@ -66,6 +77,12 @@ async function handleBookmark(questionId) {
   className="mt-4 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
 >
   ⭐ Bookmark
+</button>
+<button
+  onClick={() => handleSolved(question.id)}
+  className="mt-3 ml-3 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+>
+  ✔ Mark as Solved
 </button>
             </div>
           ))}
