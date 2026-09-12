@@ -22,6 +22,10 @@ const links = [
     label: "📄 Resume",
   },
   {
+    to: "/resume-review",
+    label: "🤖 AI Resume Review",
+  },
+  {
     to: "/profile",
     label: "👤 Profile",
   },

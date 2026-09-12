@@ -15,6 +15,7 @@ import Notes from "../pages/Notes.jsx";
 import Resume from "../pages/Resume.jsx";
 import Profile from "../pages/Profile.jsx";
 
+
 export default function AppRoutes() {
   return (
     <Routes>
@@ -115,7 +116,7 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       />
-
+      
       <Route
         path="/profile"
         element={

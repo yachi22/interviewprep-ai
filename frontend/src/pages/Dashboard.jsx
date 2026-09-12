@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { getDashboardStats } from "../api/dashboardApi";
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
   const { user, loading } = useAuth();
+  const navigate = useNavigate();
 
   const [stats, setStats] = useState({
     bookmarks: 0,
@@ -13,13 +15,25 @@ export default function Dashboard() {
     resumeUploaded: false,
   });
 
+  const [statsLoading, setStatsLoading] = useState(true);
+  const [error, setError] = useState("");
+
   useEffect(() => {
     async function loadStats() {
       try {
+        setStatsLoading(true);
+        setError("");
+
         const response = await getDashboardStats();
         setStats(response.data.stats);
       } catch (error) {
         console.error(error);
+        setError(
+          error.response?.data?.error ||
+            "Failed to load dashboard statistics."
+        );
+      } finally {
+        setStatsLoading(false);
       }
     }
 
@@ -28,88 +42,205 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="p-8 text-xl">
-        Loading...
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <p className="text-slate-500 text-lg">
+          Loading dashboard...
+        </p>
       </div>
     );
   }
 
-  return (
-    <div className="p-8">
-      {/* Welcome */}
-      <h1 className="text-3xl font-bold text-slate-800">
-        👋 Welcome, {user?.name}
-      </h1>
+  const progress =
+    stats.companies > 0
+      ? Math.min(
+          Math.round((stats.solved / stats.companies) * 100),
+          100
+        )
+      : 0;
 
-      <p className="text-slate-500 mt-2">
-        Ready for today's interview preparation?
-      </p>
+  return (
+    <div className="p-6 md:p-8 max-w-7xl mx-auto">
+      {/* Welcome Section */}
+      <div className="mb-8">
+        <h1 className="text-3xl md:text-4xl font-bold text-slate-800">
+          👋 Welcome, {user?.name}
+        </h1>
+
+        <p className="text-slate-500 mt-2 text-lg">
+          Ready for today's interview preparation?
+        </p>
+      </div>
+
+      {/* Error */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl p-4 mb-6">
+          {error}
+        </div>
+      )}
 
       {/* Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mt-8">
-
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
         {/* Companies */}
-        <div className="bg-white shadow rounded-xl p-6">
-          <h2 className="text-slate-500">Companies</h2>
-          <p className="text-3xl font-bold mt-2">
-            {stats.companies}
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+          <p className="text-sm text-slate-500">
+            Companies
+          </p>
+
+          <p className="text-3xl font-bold text-indigo-600 mt-2">
+            {statsLoading ? "..." : stats.companies}
+          </p>
+
+          <p className="text-xs text-slate-400 mt-2">
+            Available for practice
           </p>
         </div>
 
-        {/* Solved Questions */}
-        <div className="bg-white shadow rounded-xl p-6">
-          <h2 className="text-slate-500">Solved Questions</h2>
-          <p className="text-3xl font-bold mt-2">
-            {stats.solved}
+        {/* Solved */}
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+          <p className="text-sm text-slate-500">
+            Solved Questions
+          </p>
+
+          <p className="text-3xl font-bold text-green-600 mt-2">
+            {statsLoading ? "..." : stats.solved}
+          </p>
+
+          <p className="text-xs text-slate-400 mt-2">
+            Keep practicing
           </p>
         </div>
 
         {/* Bookmarks */}
-        <div className="bg-white shadow rounded-xl p-6">
-          <h2 className="text-slate-500">Bookmarks</h2>
-          <p className="text-3xl font-bold mt-2">
-            {stats.bookmarks}
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+          <p className="text-sm text-slate-500">
+            Bookmarks
+          </p>
+
+          <p className="text-3xl font-bold text-yellow-600 mt-2">
+            {statsLoading ? "..." : stats.bookmarks}
+          </p>
+
+          <p className="text-xs text-slate-400 mt-2">
+            Saved questions
           </p>
         </div>
 
         {/* Notes */}
-        <div className="bg-white shadow rounded-xl p-6">
-          <h2 className="text-slate-500">Notes</h2>
-          <p className="text-3xl font-bold mt-2">
-            {stats.notes}
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+          <p className="text-sm text-slate-500">
+            Notes
+          </p>
+
+          <p className="text-3xl font-bold text-purple-600 mt-2">
+            {statsLoading ? "..." : stats.notes}
+          </p>
+
+          <p className="text-xs text-slate-400 mt-2">
+            Your study notes
           </p>
         </div>
 
         {/* Resume */}
-        <div className="bg-white shadow rounded-xl p-6">
-          <h2 className="text-slate-500">Resume</h2>
-          <p className="text-xl font-bold mt-2">
-            {stats.resumeUploaded ? "✅ Uploaded" : "❌ Not Uploaded"}
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+          <p className="text-sm text-slate-500">
+            Resume
+          </p>
+
+          <p className="text-xl font-bold mt-3">
+            {statsLoading
+              ? "..."
+              : stats.resumeUploaded
+              ? "✅ Uploaded"
+              : "❌ Not Uploaded"}
+          </p>
+
+          <p className="text-xs text-slate-400 mt-2">
+            Resume status
           </p>
         </div>
+      </div>
 
+      {/* Progress */}
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mt-8">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <h2 className="text-xl font-semibold text-slate-800">
+              Preparation Progress
+            </h2>
+
+            <p className="text-sm text-slate-500 mt-1">
+              Track your interview preparation journey.
+            </p>
+          </div>
+
+          <span className="text-lg font-bold text-indigo-600">
+            {progress}%
+          </span>
+        </div>
+
+        <div className="w-full bg-slate-100 rounded-full h-3">
+          <div
+            className="bg-indigo-600 h-3 rounded-full transition-all duration-500"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+
+        <p className="text-sm text-slate-500 mt-3">
+          {stats.solved} questions solved
+        </p>
       </div>
 
       {/* Quick Actions */}
-      <div className="mt-10">
-        <h2 className="text-2xl font-semibold mb-4">
+      <div className="mt-8">
+        <h2 className="text-2xl font-semibold text-slate-800 mb-4">
           Quick Actions
         </h2>
 
-        <div className="flex flex-wrap gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <button
+            onClick={() => navigate("/company-questions")}
+            className="text-left bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl p-5 transition shadow-sm"
+          >
+            <div className="text-2xl mb-2">💼</div>
 
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg">
-            Practice Questions
+            <h3 className="font-semibold text-lg">
+              Practice Questions
+            </h3>
+
+            <p className="text-indigo-100 text-sm mt-1">
+              Practice company-specific interview questions.
+            </p>
           </button>
 
-          <button className="bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-lg">
-            DSA Tracker
+          <button
+            onClick={() => navigate("/dsa-tracker")}
+            className="text-left bg-green-600 hover:bg-green-700 text-white rounded-xl p-5 transition shadow-sm"
+          >
+            <div className="text-2xl mb-2">📚</div>
+
+            <h3 className="font-semibold text-lg">
+              DSA Tracker
+            </h3>
+
+            <p className="text-green-100 text-sm mt-1">
+              Track your DSA preparation and progress.
+            </p>
           </button>
 
-          <button className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-3 rounded-lg">
-            Upload Resume
-          </button>
+          <button
+            onClick={() => navigate("/resume")}
+            className="text-left bg-purple-600 hover:bg-purple-700 text-white rounded-xl p-5 transition shadow-sm"
+          >
+            <div className="text-2xl mb-2">📄</div>
 
+            <h3 className="font-semibold text-lg">
+              Upload Resume
+            </h3>
+
+            <p className="text-purple-100 text-sm mt-1">
+              Upload and manage your latest resume.
+            </p>
+          </button>
         </div>
       </div>
     </div>
