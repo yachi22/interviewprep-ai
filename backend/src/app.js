@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import path from "path";
 
 import companyRoutes from "./routes/company.routes.js";
 import questionRoutes from "./routes/question.routes.js";
@@ -12,19 +13,15 @@ import dashboardRoutes from "./routes/dashboard.routes.js";
 import dsaRoutes from "./routes/dsa.routes.js";
 import noteRoutes from "./routes/note.routes.js";
 import resumeRoutes from "./routes/resume.routes.js";
-import path from "path";
 
 const app = express();
 
-app.use(
-  "/uploads",
-  express.static(path.resolve("uploads"))
-);
+const frontendUrl =
+  process.env.FRONTEND_URL || "http://localhost:5173";
 
-// Middleware
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: frontendUrl,
     credentials: true,
   })
 );
@@ -32,7 +29,8 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-// Routes
+app.use("/uploads", express.static(path.resolve("uploads")));
+
 app.use("/api/health", healthRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/companies", companyRoutes);
@@ -44,7 +42,6 @@ app.use("/api/dsa", dsaRoutes);
 app.use("/api/notes", noteRoutes);
 app.use("/api/resume", resumeRoutes);
 
-// 404 Handler
 app.use((req, res) => {
   res.status(404).json({
     error: "Not found",

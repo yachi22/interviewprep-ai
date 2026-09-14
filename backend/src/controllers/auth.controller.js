@@ -12,6 +12,14 @@ import { signToken } from "../utils/jwt.js";
 
 const SALT_ROUNDS = 10;
 
+const isProduction = process.env.NODE_ENV === "production";
+
+const cookieOptions = {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: isProduction ? "none" : "lax",
+};
+
 // Register
 export async function register(req, res) {
   try {
@@ -84,11 +92,7 @@ export async function login(req, res) {
       email: user.email,
     });
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: false,
-    });
+    res.cookie("token", token, cookieOptions);
 
     delete user.password_hash;
 
@@ -108,7 +112,7 @@ export async function login(req, res) {
 
 // Logout
 export function logout(req, res) {
-  res.clearCookie("token");
+  res.clearCookie("token", cookieOptions);
 
   return res.json({
     success: true,
@@ -147,18 +151,20 @@ export async function updateProfile(req, res) {
   try {
     const { name, targetRole } = req.body;
 
-    if (!name || !name.trim()) {
+    if (!name?.trim()) {
       return res.status(400).json({
         success: false,
         error: "Name is required.",
       });
     }
 
-    const user = await updateUserProfile(
+    await updateUserProfile(
       req.user.id,
       name.trim(),
-      targetRole?.trim() || null
+      targetRole?.trim() || ""
     );
+
+    const user = await findUserById(req.user.id);
 
     return res.json({
       success: true,
@@ -170,7 +176,7 @@ export async function updateProfile(req, res) {
 
     return res.status(500).json({
       success: false,
-      error: "Failed to update profile.",
+      error: "Unable to update profile.",
     });
   }
 }
