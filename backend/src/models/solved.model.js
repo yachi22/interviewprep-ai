@@ -4,7 +4,7 @@ import pool from "../config/db.js";
 export async function markQuestionSolved(userId, questionId) {
   const [result] = await pool.query(
     `
-    INSERT INTO solved_questions (user_id, question_id)
+    INSERT IGNORE INTO solved_questions (user_id, question_id)
     VALUES (?, ?)
     `,
     [userId, questionId]
@@ -27,6 +27,7 @@ export async function getSolvedQuestions(userId) {
     JOIN interview_questions
       ON solved_questions.question_id = interview_questions.id
     WHERE solved_questions.user_id = ?
+    ORDER BY solved_questions.id DESC
     `,
     [userId]
   );

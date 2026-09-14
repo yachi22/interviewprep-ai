@@ -5,6 +5,7 @@ import {
   login,
   logout,
   profile,
+  updateProfile,
 } from "../controllers/auth.controller.js";
 
 import { requireAuth } from "../middleware/auth.middleware.js";
@@ -19,7 +20,8 @@ router.post("/register", validateRegister, register);
 router.post("/login", validateLogin, login);
 router.post("/logout", logout);
 
-// Protected route
+// Protected routes
 router.get("/profile", requireAuth, profile);
+router.put("/profile", requireAuth, updateProfile);
 
 export default router;

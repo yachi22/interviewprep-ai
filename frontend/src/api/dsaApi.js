@@ -1,11 +1,21 @@
 import api from "./axios";
 
-// Get all DSA topics
-export const getTopics = () => {
+export const getDSATopics = () => {
   return api.get("/dsa");
 };
 
-// Mark topic as completed
-export const completeTopic = (topicId) => {
-  return api.post("/dsa/complete", { topicId });
+export const updateDSAProgress = (
+  topicId,
+  completed,
+  revisionCount
+) => {
+  return api.put("/dsa/progress", {
+    topicId,
+    completed,
+    revisionCount,
+  });
+};
+
+export const resetDSAProgress = (topicId) => {
+  return api.delete(`/dsa/progress/${topicId}`);
 };

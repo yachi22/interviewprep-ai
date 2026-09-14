@@ -1,9 +1,10 @@
 import {
   getAllTopics,
-  markTopicCompleted,
+  updateTopicProgress,
+  resetTopicProgress,
 } from "../models/dsa.model.js";
 
-export async function fetchTopics(req, res) {
+export async function fetchDSATopics(req, res) {
   try {
     const topics = await getAllTopics(req.user.id);
 
@@ -16,27 +17,82 @@ export async function fetchTopics(req, res) {
 
     res.status(500).json({
       success: false,
-      error: "Failed to fetch topics.",
+      error: "Failed to fetch DSA topics.",
     });
   }
 }
 
-export async function completeTopic(req, res) {
+export async function updateDSAProgress(req, res) {
   try {
-    const { topicId } = req.body;
+    const {
+      topicId,
+      completed,
+      revisionCount,
+    } = req.body;
 
-    await markTopicCompleted(req.user.id, topicId);
+    if (!topicId) {
+      return res.status(400).json({
+        success: false,
+        error: "Topic ID is required.",
+      });
+    }
+
+    const revisions = Number(revisionCount) || 0;
+
+    if (revisions < 0) {
+      return res.status(400).json({
+        success: false,
+        error: "Revision count cannot be negative.",
+      });
+    }
+
+    await updateTopicProgress(
+      req.user.id,
+      topicId,
+      Boolean(completed),
+      revisions
+    );
 
     res.json({
       success: true,
-      message: "Topic completed.",
+      message: "DSA progress updated successfully.",
     });
   } catch (error) {
     console.error(error);
 
     res.status(500).json({
       success: false,
-      error: "Failed to update topic.",
+      error: "Failed to update DSA progress.",
+    });
+  }
+}
+
+export async function resetDSAProgress(req, res) {
+  try {
+    const { topicId } = req.params;
+
+    if (!topicId) {
+      return res.status(400).json({
+        success: false,
+        error: "Topic ID is required.",
+      });
+    }
+
+    await resetTopicProgress(
+      req.user.id,
+      topicId
+    );
+
+    res.json({
+      success: true,
+      message: "DSA progress reset successfully.",
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      error: "Failed to reset DSA progress.",
     });
   }
 }

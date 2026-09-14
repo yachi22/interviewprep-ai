@@ -18,6 +18,11 @@ export async function getDashboardStats(userId) {
     "SELECT COUNT(*) AS total FROM companies"
   );
 
+  // Total Interview Questions
+  const [[questionResult]] = await pool.query(
+    "SELECT COUNT(*) AS total FROM interview_questions"
+  );
+
   // Notes
   const [[noteResult]] = await pool.query(
     "SELECT COUNT(*) AS total FROM notes WHERE user_id = ?",
@@ -34,6 +39,7 @@ export async function getDashboardStats(userId) {
     bookmarks: bookmarkResult.total,
     solved: solvedResult.total,
     companies: companyResult.total,
+    totalQuestions: questionResult.total,
     notes: noteResult.total,
     resumeUploaded: resumeResult.total > 0,
   };

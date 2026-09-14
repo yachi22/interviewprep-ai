@@ -14,7 +14,8 @@ import DSATracker from "../pages/DSATracker.jsx";
 import Notes from "../pages/Notes.jsx";
 import Resume from "../pages/Resume.jsx";
 import Profile from "../pages/Profile.jsx";
-
+import Bookmarks from "../pages/Bookmarks.jsx";
+import SolvedQuestions from "../pages/SolvedQuestions.jsx";
 
 export default function AppRoutes() {
   return (
@@ -127,6 +128,26 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/bookmarks"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <Bookmarks />
+            </Layout>
+          </ProtectedRoute>
+        }
+        />
+        <Route
+          path="/solved"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <SolvedQuestions />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
 
     </Routes>
   );

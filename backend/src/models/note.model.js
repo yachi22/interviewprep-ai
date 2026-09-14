@@ -1,10 +1,15 @@
 import pool from "../config/db.js";
 
-// Get all notes
+// Get all notes for a user
 export async function getNotes(userId) {
   const [rows] = await pool.query(
     `
-    SELECT *
+    SELECT
+      id,
+      title,
+      content,
+      created_at,
+      updated_at
     FROM notes
     WHERE user_id = ?
     ORDER BY updated_at DESC
@@ -15,26 +20,51 @@ export async function getNotes(userId) {
   return rows;
 }
 
-// Create note
+// Create a note
 export async function createNote(userId, title, content) {
   const [result] = await pool.query(
     `
-    INSERT INTO notes (user_id, title, content)
+    INSERT INTO notes
+      (user_id, title, content)
     VALUES (?, ?, ?)
     `,
     [userId, title, content]
   );
 
+  return result.insertId;
+}
+
+// Update a note
+export async function updateNote(
+  userId,
+  noteId,
+  title,
+  content
+) {
+  const [result] = await pool.query(
+    `
+    UPDATE notes
+    SET title = ?,
+        content = ?
+    WHERE id = ?
+      AND user_id = ?
+    `,
+    [title, content, noteId, userId]
+  );
+
   return result;
 }
 
-// Delete note
+// Delete a note
 export async function deleteNote(userId, noteId) {
-  await pool.query(
+  const [result] = await pool.query(
     `
     DELETE FROM notes
-    WHERE id = ? AND user_id = ?
+    WHERE id = ?
+      AND user_id = ?
     `,
     [noteId, userId]
   );
+
+  return result;
 }

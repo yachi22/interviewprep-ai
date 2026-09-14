@@ -12,8 +12,14 @@ import dashboardRoutes from "./routes/dashboard.routes.js";
 import dsaRoutes from "./routes/dsa.routes.js";
 import noteRoutes from "./routes/note.routes.js";
 import resumeRoutes from "./routes/resume.routes.js";
+import path from "path";
 
 const app = express();
+
+app.use(
+  "/uploads",
+  express.static(path.resolve("uploads"))
+);
 
 // Middleware
 app.use(

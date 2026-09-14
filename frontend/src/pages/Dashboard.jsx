@@ -11,6 +11,7 @@ export default function Dashboard() {
     bookmarks: 0,
     solved: 0,
     companies: 0,
+    totalQuestions: 0,
     notes: 0,
     resumeUploaded: false,
   });
@@ -25,9 +26,11 @@ export default function Dashboard() {
         setError("");
 
         const response = await getDashboardStats();
+
         setStats(response.data.stats);
       } catch (error) {
         console.error(error);
+
         setError(
           error.response?.data?.error ||
             "Failed to load dashboard statistics."
@@ -51,9 +54,11 @@ export default function Dashboard() {
   }
 
   const progress =
-    stats.companies > 0
+    stats.totalQuestions > 0
       ? Math.min(
-          Math.round((stats.solved / stats.companies) * 100),
+          Math.round(
+            (stats.solved / stats.totalQuestions) * 100
+          ),
           100
         )
       : 0;
@@ -174,19 +179,23 @@ export default function Dashboard() {
           </div>
 
           <span className="text-lg font-bold text-indigo-600">
-            {progress}%
+            {statsLoading ? "..." : `${progress}%`}
           </span>
         </div>
 
         <div className="w-full bg-slate-100 rounded-full h-3">
           <div
             className="bg-indigo-600 h-3 rounded-full transition-all duration-500"
-            style={{ width: `${progress}%` }}
+            style={{
+              width: `${statsLoading ? 0 : progress}%`,
+            }}
           />
         </div>
 
         <p className="text-sm text-slate-500 mt-3">
-          {stats.solved} questions solved
+          {statsLoading
+            ? "Loading progress..."
+            : `${stats.solved} of ${stats.totalQuestions} questions solved`}
         </p>
       </div>
 
@@ -197,11 +206,14 @@ export default function Dashboard() {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Practice Questions */}
           <button
             onClick={() => navigate("/company-questions")}
             className="text-left bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl p-5 transition shadow-sm"
           >
-            <div className="text-2xl mb-2">💼</div>
+            <div className="text-2xl mb-2">
+              💼
+            </div>
 
             <h3 className="font-semibold text-lg">
               Practice Questions
@@ -212,11 +224,14 @@ export default function Dashboard() {
             </p>
           </button>
 
+          {/* DSA Tracker */}
           <button
             onClick={() => navigate("/dsa-tracker")}
             className="text-left bg-green-600 hover:bg-green-700 text-white rounded-xl p-5 transition shadow-sm"
           >
-            <div className="text-2xl mb-2">📚</div>
+            <div className="text-2xl mb-2">
+              📚
+            </div>
 
             <h3 className="font-semibold text-lg">
               DSA Tracker
@@ -227,11 +242,14 @@ export default function Dashboard() {
             </p>
           </button>
 
+          {/* Resume */}
           <button
             onClick={() => navigate("/resume")}
             className="text-left bg-purple-600 hover:bg-purple-700 text-white rounded-xl p-5 transition shadow-sm"
           >
-            <div className="text-2xl mb-2">📄</div>
+            <div className="text-2xl mb-2">
+              📄
+            </div>
 
             <h3 className="font-semibold text-lg">
               Upload Resume

@@ -1,58 +1,8 @@
-import multer from "multer";
-import path from "path";
-
 import {
-  saveResume,
   getResume,
+  createResume,
+  deleteUserResumes,
 } from "../models/resume.model.js";
-
-const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    cb(null, "uploads/");
-  },
-
-  filename(req, file, cb) {
-    const fileName =
-      Date.now() + path.extname(file.originalname);
-
-    cb(null, fileName);
-  },
-});
-
-export const upload = multer({
-  storage,
-});
-
-export async function uploadResume(req, res) {
-console.log(req.file);
-console.log(req.user);
-  try {
-    if (!req.file) {
-      return res.status(400).json({
-        success: false,
-        error: "No file uploaded.",
-      });
-    }
-
-    await saveResume(
-      req.user.id,
-      req.file.originalname,
-      req.file.filename
-    );
-
-    res.json({
-      success: true,
-      message: "Resume uploaded successfully.",
-    });
-  } catch (error) {
-    console.error(error);
-
-    res.status(500).json({
-      success: false,
-      error: "Upload failed.",
-    });
-  }
-}
 
 export async function fetchResume(req, res) {
   try {
@@ -68,6 +18,59 @@ export async function fetchResume(req, res) {
     res.status(500).json({
       success: false,
       error: "Failed to fetch resume.",
+    });
+  }
+}
+
+export async function uploadResume(req, res) {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        error: "Please select a resume file.",
+      });
+    }
+
+    const allowedTypes = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+
+    if (!allowedTypes.includes(req.file.mimetype)) {
+      return res.status(400).json({
+        success: false,
+        error: "Only PDF, DOC, and DOCX files are allowed.",
+      });
+    }
+
+    // Remove the user's previous resume record
+    await deleteUserResumes(req.user.id);
+
+    const fileUrl = `/uploads/${req.file.filename}`;
+
+    const resumeId = await createResume(
+      req.user.id,
+      req.file.originalname,
+      fileUrl
+    );
+
+    res.status(201).json({
+      success: true,
+      message: "Resume uploaded successfully.",
+      resumeId,
+      resume: {
+        id: resumeId,
+        file_name: req.file.originalname,
+        file_url: fileUrl,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      error: "Failed to upload resume.",
     });
   }
 }

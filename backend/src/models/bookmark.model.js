@@ -3,7 +3,7 @@ import pool from "../config/db.js";
 export async function bookmarkQuestion(userId, questionId) {
   const [result] = await pool.query(
     `
-    INSERT INTO bookmarks (user_id, question_id)
+    INSERT IGNORE INTO bookmarks (user_id, question_id)
     VALUES (?, ?)
     `,
     [userId, questionId]

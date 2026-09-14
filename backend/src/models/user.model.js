@@ -10,7 +10,7 @@ export async function findUserByEmail(email) {
   return rows[0] || null;
 }
 
-// Used during login (includes password hash)
+// Used during login
 export async function findUserByEmailWithPassword(email) {
   const [rows] = await pool.query(
     `SELECT
@@ -29,7 +29,7 @@ export async function findUserByEmailWithPassword(email) {
   return rows[0] || null;
 }
 
-// Used for /profile
+// Get profile
 export async function findUserById(id) {
   const [rows] = await pool.query(
     `SELECT
@@ -47,7 +47,19 @@ export async function findUserById(id) {
   return rows[0] || null;
 }
 
-// Create new user
+// Update profile
+export async function updateUserProfile(id, name, targetRole) {
+  await pool.query(
+    `UPDATE users
+     SET name = ?, target_role = ?
+     WHERE id = ?`,
+    [name, targetRole || null, id]
+  );
+
+  return await findUserById(id);
+}
+
+// Create user
 export async function createUser({
   name,
   email,
