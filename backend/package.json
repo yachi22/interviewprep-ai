@@ -17,6 +17,7 @@
     "dotenv": "^16.6.1",
     "express": "^4.21.0",
     "jsonwebtoken": "^9.0.2",
+    "multer": "^2.4.0",
     "mysql2": "^3.11.3",
     "pdf-parse": "npm:@cedrugs/pdf-parse@^1.0.0"
   },
