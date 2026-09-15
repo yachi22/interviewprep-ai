@@ -17,4 +17,6 @@ build/
 
 # OS files
 .DS_Store
-Thumbs.db
+Thumbs.dbinterviewprep_backup.sql
+
+interviewprep_backup.sql
