@@ -1,4 +1,6 @@
-# InterviewPrep AI
+git add README.md
+git commit -m "Finalize project README"
+git push origin main# InterviewPrep AI
 
 A full-stack interview preparation platform designed to help students organize company-specific interview questions, track DSA preparation, save important questions, maintain personal notes, manage resumes, and monitor their preparation progress.
 
